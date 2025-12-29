@@ -7,15 +7,23 @@ type Options = IntersectionObserverInit & {
 export function useIntersectionObserver(
   targetRef: React.RefObject<Element | null>,
   onIntersect: () => void,
-  { enabled = true, root = null, rootMargin = '0px', threshold = 0 }: Options = {}
+  {
+    enabled = true,
+    root = null,
+    rootMargin = '0px',
+    threshold = 0,
+  }: Options = {},
 ) {
   useEffect(() => {
     const el = targetRef.current;
     if (!enabled || !el) return;
 
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0]?.isIntersecting) onIntersect();
-    }, { root, rootMargin, threshold });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) onIntersect();
+      },
+      { root, rootMargin, threshold },
+    );
 
     observer.observe(el);
     return () => observer.disconnect();
