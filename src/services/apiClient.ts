@@ -13,25 +13,23 @@ export interface AddTodoPost {
   userId: number;
 }
 
+export class ApiClient<T> {
+  LIMIT = 15;
+  baseUrl = 'https://jsonplaceholder.typicode.com/posts';
 
-const LIMIT = 15;
+  async getTodosPages(page: number, userId?: number): Promise<T[]> {
+    const res = await axios.get<T[]>(this.baseUrl, {
+      params: {
+        _page: page,
+        _limit: this.LIMIT,
+        ...(userId ? { userId } : {}),
+      },
+    });
+    return res.data;
+  }
 
-export async function getTodosPages(
-  page: number,
-  userId?: number,
-): Promise<Todo[]> {
-  const res = await axios.get<Todo[]>(
-    'https://jsonplaceholder.typicode.com/posts',
-    { params: { _page: page, _limit: LIMIT, ...(userId ? { userId } : {}) } },
-  );
-  return res.data;
+  async addTodoPost(newPost: AddTodoPost): Promise<T> {
+    const res = await axios.post<T>(this.baseUrl, newPost);
+    return res.data;
+  }
 }
-
-export async function addTodoPost(newPost:AddTodoPost): Promise<Todo> {  
-  const res = await axios.post<Todo>(
-    'https://jsonplaceholder.typicode.com/posts',
-    newPost
-  );
-  return res.data
-}
-
